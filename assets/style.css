@@ -99,10 +99,17 @@ body{
     text-align: center;
 }
 
-.future-forecast .today .temp{
-    font-size: 18px;
-    padding-top: 15px;
+.w-icon{
+    width: 70%;
 }
+
+.today .temp{
+    font-size: 35px;
+    padding-top: 15px;
+
+}
+
+
 
 .future-forecast .weather-forecast{
     display: flex;
@@ -144,7 +151,7 @@ weather-forecast .weather-forecast-item .temp{
     }
 
     .future-forecast .today .temp{
-        font-size: 16px;
+        font-size: 40px;
     }
 
     .date-container .time{
