@@ -15,7 +15,7 @@ const API_KEY = "ce8adb725959853af1d79d03da42a6aa"
 const forecast_api = 'dfe36761054c2b01ce788451c96b96a8'
 const time_api = '23c9b0c81d6d47c294bcc1ce19bc827e'
 
-const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const weekdays = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
 
 // window.onload =() =>{
 //     if (navigator.geolocation) {
@@ -72,7 +72,7 @@ async function getElement(url){
     try {
         const response = await fetch(url)
         const data = await response.json()
-        // console.log(data);
+        console.log(data);
 
 
 
@@ -83,13 +83,16 @@ async function getElement(url){
 }
 
 
-async function forecast(api_url){
+async function forecast(api_url, time_url){
     try {
         const response2 = await fetch(api_url)
         const data2 = await response2.json()
 
+        const response4 = await fetch(time_url)
+        const data4 = await response4.json()
+
         // console.log(data2);
-        fiveDays(data2)
+        fiveDays(data2, data4)
 
     } catch(err){
         console.log('err', err);
@@ -113,12 +116,25 @@ async function localTime(timeDate){
 
 let html_loop = ''
 
-function fiveDays(data){
-    for(var i=0; i < weekday.length; i++){
+function fiveDays(data, data2){
+
+    const today = new Date();
+
+    const dayName = today.toLocaleString("en-US", {
+        timeZone: `${data2.features[0].properties.timezone.name}`,
+        weekday: 'long'
+    })
+
+    console.log(dayName);
+
+    let index = weekdays.indexOf(dayName)
+    console.log('index of the day', index);
+
+    for(var i=index; i < weekdays.length; i++){
 
        html_loop += `
             <div class="weather-forecast-item">
-                <div class="day">Wed</div>
+                <div class="day">${weekdays[i]}</div>
                 <img src="https://openweathermap.org/img/wn/${data.list[i+1].weather[0].icon}.png" alt="weather icon" class="w-icon">
 
                 <div class="temp">${data.list[i+1].main.temp}&#176; C</div>
@@ -127,7 +143,7 @@ function fiveDays(data){
     }
     weatherForecastEl.innerHTML = html_loop
     html_loop = ''
-    console.log('5-days',data);
+    // console.log('5-days',data);
 
 
 
@@ -178,10 +194,35 @@ function date_of_city(sheher){
         timeZone: `${sheher.features[0].properties.timezone.name}`,
         weekday: 'long'
     })
-    console.log(dayName);
+
+    const month = today.toLocaleString("en-US", {
+        timeZone: `${sheher.features[0].properties.timezone.name}`,
+        month: 'long'
+    })
+
+    const day_numeric = today.toLocaleString("en-US", {
+        timeZone: `${sheher.features[0].properties.timezone.name}`,
+        day: 'numeric'
+    })
+
+    const hour = today.toLocaleString("en-US", {
+        timeZone: `${sheher.features[0].properties.timezone.name}`,
+        hour: 'numeric',
+        hour12: false
+    })
+
+    const minute = today.toLocaleString("en-US", {
+        timeZone: `${sheher.features[0].properties.timezone.name}`,
+        minute: 'numeric'
+    })
+
+    timeEl.innerHTML = `${hour} : ${minute} <span id="am-pm"></span>`
+
+
+    // console.log(dayName);
 
     dateEl.innerHTML = `<div id="date" class="date">
-                        ${dayName}, 24 May
+                        ${dayName}, ${day_numeric} ${month}
                         </div>`
 }
 
@@ -194,7 +235,7 @@ addBtn.addEventListener('click', function(){
 
     localTime(date_time)
     // getTime(search)
-    forecast(forecastWeather)
+    forecast(forecastWeather, date_time)
     getElement(apiWeather)
 
 })
