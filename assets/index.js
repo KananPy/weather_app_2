@@ -213,7 +213,8 @@ function date_of_city(sheher){
 
     const minute = today.toLocaleString("en-US", {
         timeZone: `${sheher.features[0].properties.timezone.name}`,
-        minute: 'numeric'
+        minute: '2-digit',
+
     })
 
     timeEl.innerHTML = `${hour} : ${minute} <span id="am-pm"></span>`
