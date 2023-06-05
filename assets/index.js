@@ -130,7 +130,7 @@ function fiveDays(data, data2){
     let index = weekdays.indexOf(dayName)
     console.log('index of the day', index);
 
-    for(var i=index; i < weekdays.length; i++){
+    for(var i=index+1; i < weekdays.length; i++){
 
        html_loop += `
             <div class="weather-forecast-item">
