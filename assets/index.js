@@ -106,7 +106,7 @@ async function localTime(timeDate){
         const data3 = await response3.json()
 
 
-        // console.log('data3',response3);
+        console.log('data3',response3);
 
         date_of_city(data3)
     } catch(err){
@@ -120,6 +120,10 @@ function fiveDays(data, data2){
 
     const today = new Date();
 
+    // const currentDayIndex = today.getDay(); 
+    // console.log("current", currentDayIndex);
+    
+
     const dayName = today.toLocaleString("en-US", {
         timeZone: `${data2.features[0].properties.timezone.name}`,
         weekday: 'long'
@@ -128,13 +132,17 @@ function fiveDays(data, data2){
     console.log(dayName);
 
     let index = weekdays.indexOf(dayName)
-    console.log('index of the day', index);
+    const forecastStartIndex = (index + 1) % 7;
+   
 
-    for(var i=index+1; i < weekdays.length; i++){
-
+    for(var i=0; i < weekdays.length; i++){
+        const forecastIndex = (forecastStartIndex + i) % weekdays.length;
+        
+        
+        console.log(weekdays[i]);
        html_loop += `
             <div class="weather-forecast-item">
-                <div class="day">${weekdays[i]}</div>
+                <div class="day">${weekdays[forecastIndex]}</div>
                 <img src="https://openweathermap.org/img/wn/${data.list[i+1].weather[0].icon}.png" alt="weather icon" class="w-icon">
 
                 <div class="temp">${data.list[i+1].main.temp}&#176; C</div>
@@ -183,6 +191,7 @@ function showCityData(cityInfo){
 }
 
 function date_of_city(sheher){
+    
     country.innerHTML = `
                 <div class="time-zone" id="time-zone">${sheher.features[0].properties.city}</div>
                 <div class="time-zone" id="time-zone">${sheher.features[0].properties.country}</div>`
@@ -228,7 +237,7 @@ function date_of_city(sheher){
 }
 
 
-addBtn.addEventListener('click', function(){
+function performans(){
     const search = inputEl.value
     const apiWeather = `https://api.openweathermap.org/data/2.5/weather?q=${search}&APPID=${API_KEY}&units=metric`
     const forecastWeather = `https://api.openweathermap.org/data/2.5/forecast?q=${search}&appid=${forecast_api}&units=metric`
@@ -238,5 +247,12 @@ addBtn.addEventListener('click', function(){
     // getTime(search)
     forecast(forecastWeather, date_time)
     getElement(apiWeather)
+}
 
-})
+addBtn.addEventListener('click', performans)
+
+inputEl.addEventListener('keypress', function(event) {
+    if (event.key === 'Enter') {
+        performans();
+    }
+});
